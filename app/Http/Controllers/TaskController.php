@@ -3,17 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Folder;
+use App\Task;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
     public function index(int $id) 
     {
+        // Get all folders
         $folders = Folder::all();
+
+        // Get selected folders
+        $current_folder = Folder::find($id);
+
+        // Get selected Tasks
+        //$tasks = Task::where('folder_id', $current_folder->id)->get();
+        // hasManyの紐づけが上手くいったら、以下のように書ける
+        $tasks = $current_folder->tasks()->get();
 
         return view('tasks/index', [
             'folders' => $folders,
-            'current_folder_id' => $id,
+            'current_folder_id' => $current_folder->id,
+            'tasks' => $tasks,
         ]);
     }
 }
